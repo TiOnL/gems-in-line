@@ -1,6 +1,7 @@
 import {Stone} from "./Stone";
 import {GameLogic} from "./GameLogic"
 import {Constants} from "../Constants"
+import {DestroyAnimation} from "./DestroyAnimation"
 
 var Layer = cc.Layer.extend({
   sprite:null,
@@ -9,6 +10,13 @@ var Layer = cc.Layer.extend({
     this._super();
     this.gameLogic = new GameLogic(this);
     this.startLevel();
+    cc.eventManager.addListener({
+          event: cc.EventListener.TOUCH_ONE_BY_ONE,
+          onTouchBegan: (touch, event) =>{
+              console.log("onTouch");
+              this.gameLogic.onClick(touch.getLocation());
+          }
+        }, this);
 
   },
 
@@ -17,6 +25,11 @@ var Layer = cc.Layer.extend({
       var stone = new Stone( Math.floor(Math.random()*2));
       this.gameLogic.addStone(stone, Math.floor(Math.random()*Constants.GAME_FIELD_COLUMN_COUNT));
     }
+  },
+
+  addDestroyAnimation(x,y){
+    var sprite = new DestroyAnimation(x,y);
+    this.addChild(sprite);
   }
 
 });
