@@ -36,7 +36,7 @@ var Layer = cc.Layer.extend({
 
   startLevel(){
     for(var i = 0; i<30; i++){
-      var stone = new Stone( Math.floor(Math.random()*3));
+      var stone = new Stone( Math.floor(Math.random()*5));
       this.gameLogic.addStone(stone, Math.floor(Math.random()*Constants.GAME_FIELD_COLUMN_COUNT));
       this.gameLogic.steps = 5;
     }
