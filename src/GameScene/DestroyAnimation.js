@@ -13,7 +13,6 @@ export var DestroyAnimation = cc.Sprite.extend({
    }
    var animation = new cc.Animation(animFrames, 0.05, 1);
    var animateAction = cc.Animate.create(animation);
-   this.runAction(animateAction);
    this.setPosition(x,y);
   this.runAction(new cc.Sequence( animateAction, new cc.callFunc(this.deleteFromParent, this)));
 },

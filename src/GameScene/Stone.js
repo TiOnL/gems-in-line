@@ -8,6 +8,15 @@ export var Stone = cc.Sprite.extend({
     var spriteFrames = Resources.getSpriteFrames("stone"+type);
     this._super(spriteFrames[0]);
     this.highlightOff();
+    var animFrames = [];
+    for(var spriteFrame of spriteFrames){
+     var animFrame = new cc.AnimationFrame(spriteFrame, 1, null);
+     animFrames.push(animFrame);
+   }
+   var animation = new cc.Animation(animFrames, 0.05, 1);
+   var animateAction = cc.Animate.create(animation);
+   var sequence = new cc.Sequence( animateAction, new cc.DelayTime(3));
+   this.runAction(sequence.repeatForever());
 
   },
 
