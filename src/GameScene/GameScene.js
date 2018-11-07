@@ -17,7 +17,7 @@ var Layer = cc.Layer.extend({
               this.gameLogic.onClick(touch.getLocation());
           }
         }, this);
-
+    this.scheduleUpdate();
   },
 
   startLevel(){
@@ -30,6 +30,10 @@ var Layer = cc.Layer.extend({
   addDestroyAnimation(x,y){
     var sprite = new DestroyAnimation(x,y);
     this.addChild(sprite);
+  },
+
+  update(dt){
+    this.gameLogic.update(dt);
   }
 
 });

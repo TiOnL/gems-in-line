@@ -10,6 +10,7 @@ export var GameLogic = function(scene){
   this.scene = scene;
   this.status = STATUS_WAITING;
   this.selectedCell = null;
+  this.fallingTime = null;
   this.cup = new Array(Constants.GAME_FIELD_COLUMN_COUNT);
   for(var i=0; i < Constants.GAME_FIELD_COLUMN_COUNT; i++){
     this.cup[i] = new Array();
@@ -46,7 +47,9 @@ GameLogic.prototype.addStone = function(stone, columnNumber){
 }
 
 GameLogic.prototype.update = function(dt){
-
+  if(this.status == STATUS_FALLING){
+    this.falling(dt);
+  }
 }
 
 GameLogic.prototype.onClick = function(location){
@@ -135,6 +138,41 @@ GameLogic.prototype.startDestroy = function(){
         }
       }
       this.status = STATUS_FALLING;
+      this.startFall();
     }, 500);
     console.log(destroyLists);
+}
+
+GameLogic.prototype.startFall = function(){
+  this.fallingTime = 0;
+  for (var col of this.cup){
+    var freeSpaceCount = 0;
+    for(var i =0; i<col.length; i++){
+      if(col[i] == null){
+        freeSpaceCount++;
+      }else if(freeSpaceCount > 0){
+        col[i-freeSpaceCount] = col[i];
+        col[i] = null;
+      }
+    }
+
+  }
+}
+
+GameLogic.prototype.falling = function(dt){
+  this.fallingTime += dt;
+  var stillFalling = false;
+  var fallSpeed = Constants.FALL_ACCELERATION * this.fallingTime;
+  for (var col of this.cup)
+    for(var i = 0; i<col.length; i++){
+      if(col[i] && col[i].y > getCellY(i)){
+        col[i].y = Math.max(getCellY(i), col[i].y - fallSpeed*dt);
+        stillFalling = true;
+      }
+    }
+
+  if(!stillFalling){
+    this.status = STATUS_DESTROYING;
+    this.startDestroy();
+  }
 }
