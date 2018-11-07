@@ -11,6 +11,9 @@ export var GameLogic = function(scene){
   this.status = STATUS_WAITING;
   this.selectedCell = null;
   this.fallingTime = null;
+  this.score = 0;
+  this.steps = 0;
+  this.desroyCombo = 0;
   this.cup = new Array(Constants.GAME_FIELD_COLUMN_COUNT);
   for(var i=0; i < Constants.GAME_FIELD_COLUMN_COUNT; i++){
     this.cup[i] = new Array();
@@ -59,10 +62,11 @@ GameLogic.prototype.onClick = function(location){
   var hasStoneClicked = (clickColumn >= 0 && clickColumn < this.cup.length &&
       clickRow>=0 && clickRow < this.cup[clickColumn].length &&
       this.cup[clickColumn][clickRow] != null);
-  if(this.selectedCell && hasStoneClicked &&
+  if(this.selectedCell && hasStoneClicked && this.steps > 0 &&
       Math.abs(this.selectedCell.row - clickRow) +
       Math.abs(this.selectedCell.column - clickColumn) == 1){
         this.status = STATUS_SWAPPING;
+        this.steps--;
         this.cup[this.selectedCell.column][this.selectedCell.row].moveTo(1.0,
            getCellX(clickColumn), getCellY(clickRow)).then(()=>{
              this.status = STATUS_DESTROYING;
@@ -94,20 +98,21 @@ GameLogic.prototype.onClick = function(location){
 GameLogic.prototype.startDestroy = function(){
   var destroyLists = [];
   var checkedFlags = [];
+  this.desroyCombo ++;
   for(var i = 0; i< Constants.GAME_FIELD_COLUMN_COUNT; i++){
     checkedFlags[i] = new Array(this.cup[i].length);
   }
-  var findDestroyable = (sameList, stoneType, column, row)=>{
+  var findSameTypeArea = (sameList, stoneType, column, row)=>{
     if(!checkedFlags[column][row] && this.cup[column][row] &&
         this.cup[column][row].type == stoneType){
           sameList.push({column:column, row:row});
           checkedFlags[column][row] = true;
-          if(column > 0) findDestroyable(sameList, stoneType, column-1, row);
+          if(column > 0) findSameTypeArea(sameList, stoneType, column-1, row);
           if(column < Constants.GAME_FIELD_COLUMN_COUNT -1){
-            findDestroyable(sameList, stoneType, column+1, row);
+            findSameTypeArea(sameList, stoneType, column+1, row);
           }
-          if(row > 0) findDestroyable(sameList, stoneType, column, row-1);
-          if(row < this.cup[column].length-1)findDestroyable(sameList, stoneType, column, row+1);
+          if(row > 0) findSameTypeArea(sameList, stoneType, column, row-1);
+          if(row < this.cup[column].length-1)findSameTypeArea(sameList, stoneType, column, row+1);
         }
   }
 
@@ -115,20 +120,25 @@ GameLogic.prototype.startDestroy = function(){
     for (var j = 0; j< this.cup[i].length; j++)
       if(this.cup[i][j]){
         var list = [];
-        findDestroyable(list,this.cup[i][j].type, i,j);
+        findSameTypeArea(list,this.cup[i][j].type, i,j);
         if(list.length>3){
           destroyLists.push(list);
         }
       }
 
     if(destroyLists.length == 0){
+      this.desroyCombo = 0;
       this.status = STATUS_WAITING;
       return;
     }
+    this.steps += this.desroyCombo*1;
+
     for(var destroyList of destroyLists){
       for( var elem of destroyList){
         this.scene.addDestroyAnimation(getCellX(elem.column), getCellY(elem.row));
       }
+      this.steps += this.desroyCombo*Math.min(1, Math.floor(destroyList.length/4));
+      this.score += Math.round(Math.sqrt(this.desroyCombo)*destroyList.length);
     }
     setTimeout( ()=>{
       for(var destroyList of destroyLists){
