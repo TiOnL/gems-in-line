@@ -9,6 +9,7 @@ var Layer = cc.Layer.extend({
   gameLogic:GameLogic,
   scoreNumber:null,
   stepsNumber:null,
+  targetNumber:null,
   ctor:function () {
     this._super();
     var size = cc.winSize;
@@ -18,14 +19,19 @@ var Layer = cc.Layer.extend({
     this.addChild(gameBackground, -127);
 
     this.scoreNumber = new AnimatedNumber(4);
-    this.scoreNumber.x = size.width * 0.7;
-    this.scoreNumber.y = size.height * 0.9;
-    this.scoreNumber.scaleX = 0.6;
+    this.scoreNumber.x = size.width * 0.6;
+    this.scoreNumber.y = size.height * 0.91;
+    this.scoreNumber.scaleX = 0.8;
     this.addChild(this.scoreNumber);
     this.stepsNumber = new AnimatedNumber(3);
-    this.stepsNumber.x = 30;
-    this.stepsNumber.y = size.height * 0.9;
+    this.stepsNumber.x = 50;
+    this.stepsNumber.y = size.height * 0.93;
     this.addChild(this.stepsNumber);
+    this.targetNumber = new AnimatedNumber(4);
+    this.targetNumber.x = size.width * 0.6;
+    this.targetNumber.y = size.height * 0.97;
+    this.targetNumber.scaleX = 0.8;
+    this.addChild(this.targetNumber);
 
     this.startLevel();
     cc.eventManager.addListener({
