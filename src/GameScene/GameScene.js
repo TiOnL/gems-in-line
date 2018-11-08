@@ -3,9 +3,9 @@ import {GameLogic} from "./GameLogic"
 import {Constants} from "../Constants"
 import {DestroyAnimation} from "./DestroyAnimation"
 import {AnimatedNumber} from "./AnimatedNumber"
+import {Resources} from "../Resources"
 
 var Layer = cc.Layer.extend({
-  sprite:null,
   gameLogic:GameLogic,
   scoreNumber:null,
   stepsNumber:null,
@@ -13,6 +13,10 @@ var Layer = cc.Layer.extend({
     this._super();
     var size = cc.winSize;
     this.gameLogic = new GameLogic(this);
+    var gameBackground = new cc.Sprite(Resources.res.gameBackground);
+    gameBackground.setPosition(size.width/2, size.height/2);
+    this.addChild(gameBackground, -127);
+
     this.scoreNumber = new AnimatedNumber(4);
     this.scoreNumber.x = size.width * 0.7;
     this.scoreNumber.y = size.height * 0.9;

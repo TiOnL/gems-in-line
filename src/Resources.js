@@ -1,7 +1,7 @@
 "use strict"
 export var Resources = {
   res:{
-    HelloWorld_png : "res/HelloWorld.png"
+    gameBackground : "res/gameBackground.png"
   },
   frames:{
     "stone0":{
