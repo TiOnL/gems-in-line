@@ -10,13 +10,16 @@ var HelloWorldLayer = cc.Layer.extend({
 
         var size = cc.winSize;
 
-
-        var helloLabel = new cc.LabelTTF("Press enter to start", "Arial", 38);
-        // position the label on the center of the screen
-        helloLabel.x = size.width / 2;
-        helloLabel.y = size.height / 2 ;
-        // add the label as a child to this layer
+        var info = "Rules:\n\n Touch gem to select, and touch adjacent one to swap it.\n"+
+        "Place 4 gems to each other, to make them dissapear.\n"+
+        "\n You will receive extra steps, if 5 or more \ngems are dissapearing or "+
+        "in case of chain reaction. \n You will win if you reach a target score.";
+        var helloLabel = new cc.LabelTTF("Touch to start", "Arial", 38);
+        helloLabel.setPosition(size.width/2, size.height*0.7);
         this.addChild(helloLabel, 5);
+        var infoLabel = new cc.LabelTTF(info, "Arial", 28);
+        infoLabel.setPosition(size.width/2, size.height/2);
+        this.addChild(infoLabel, 5);
 
         // add "HelloWorld" splash screen"
         this.sprite = new cc.Sprite(Resources.res.HelloWorld_png);
