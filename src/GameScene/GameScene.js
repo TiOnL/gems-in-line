@@ -6,6 +6,7 @@ import {AnimatedNumber} from "./AnimatedNumber"
 import {Resources} from "../Resources"
 import {LevelData} from "./LevelData"
 import {EndScene} from "../EndScene"
+import {touchOnce} from "../Util"
 
 var Layer = cc.Layer.extend({
   gameLogic:GameLogic,
@@ -40,26 +41,20 @@ var Layer = cc.Layer.extend({
         var stageClear = new cc.Sprite(Resources.res.stageClear);
         stageClear.setPosition(size.width/2, size.height/2);
         this.addChild(stageClear);
-        setTimeout(()=>{
+        touchOnce(()=>{
           this.gameLogic.reset();
           stageClear.removeFromParent();
           this.startLevel(this.currentLevel+1);
-        },5000);
+        },this);
       }else{
         var stageFailMsg = new cc.Sprite(Resources.res.stageFail);
         stageFailMsg.setPosition(size.width/2, size.height/2);
         this.addChild(stageFailMsg);
-
-        var touchListener = cc.EventListener.create({
-          event: cc.EventListener.TOUCH_ONE_BY_ONE,
-          onTouchBegan: (touch, event) =>{
-              cc.eventManager.removeListener(touchListener);
-              stageFailMsg.removeFromParent();
-              this.gameLogic.reset();
-              this.startLevel(this.currentLevel);
-          }
-        });
-        cc.eventManager.addListener(touchListener, this);
+        touchOnce(()=>{
+          stageFailMsg.removeFromParent();
+          this.gameLogic.reset();
+          this.startLevel(this.currentLevel);
+        },this);
       }
     };
     this.startLevel(1);
