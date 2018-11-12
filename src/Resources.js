@@ -1,7 +1,8 @@
 "use strict"
 export var Resources = {
   res:{
-    gameBackground : "res/gameBackground.png"
+    gameBackground : "res/gameBackground.png",
+    stageClear:"res/stageClear.png"
   },
   frames:{
     "stone0":{

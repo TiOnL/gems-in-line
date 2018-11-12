@@ -4,12 +4,14 @@ import {Constants} from "../Constants"
 import {DestroyAnimation} from "./DestroyAnimation"
 import {AnimatedNumber} from "./AnimatedNumber"
 import {Resources} from "../Resources"
+import {LevelData} from "./LevelData"
 
 var Layer = cc.Layer.extend({
   gameLogic:GameLogic,
   scoreNumber:null,
   stepsNumber:null,
   targetNumber:null,
+  currentLevel:0,
   ctor:function () {
     this._super();
     var size = cc.winSize;
@@ -32,8 +34,19 @@ var Layer = cc.Layer.extend({
     this.targetNumber.y = size.height * 0.97;
     this.targetNumber.scaleX = 0.8;
     this.addChild(this.targetNumber);
-
-    this.startLevel();
+    this.gameLogic.onGameEnded = (won)=>{
+      if(won){
+        var stageClear = new cc.Sprite(Resources.res.stageClear);
+        stageClear.setPosition(size.width/2, size.height/2);
+        this.addChild(stageClear);
+        setTimeout(()=>{
+          this.gameLogic.reset();
+          stageClear.removeFromParent();
+          this.startLevel(this.currentLevel+1);
+        },5000);
+      }
+    };
+    this.startLevel(1);
     cc.eventManager.addListener({
           event: cc.EventListener.TOUCH_ONE_BY_ONE,
           onTouchBegan: (touch, event) =>{
@@ -44,12 +57,20 @@ var Layer = cc.Layer.extend({
     this.scheduleUpdate();
   },
 
-  startLevel(){
-    for(var i = 0; i<30; i++){
-      var stone = new Stone( Math.floor(Math.random()*5));
-      this.gameLogic.addStone(stone, Math.floor(Math.random()*Constants.GAME_FIELD_COLUMN_COUNT));
-      this.gameLogic.steps = 5;
+  startLevel(level){
+    this.currentLevel = level;
+    if(!LevelData[level]){
+      this.endGame();
+      return;
     }
+    var column = 0;
+    for(var stoneType of LevelData[level].startStones){
+      var stone = new Stone(stoneType);
+      this.gameLogic.addStone(stone, column);
+      column = (column+1)%Constants.GAME_FIELD_COLUMN_COUNT
+    }
+    this.gameLogic.steps = LevelData[level].steps;
+    this.gameLogic.target = LevelData[level].target;
   },
 
   addDestroyAnimation(x,y){
@@ -57,10 +78,15 @@ var Layer = cc.Layer.extend({
     this.addChild(sprite);
   },
 
+  endGame(){
+
+  },
+
   update(dt){
     this.gameLogic.update(dt);
     this.scoreNumber.setValue(this.gameLogic.score);
     this.stepsNumber.setValue(this.gameLogic.steps);
+    this.targetNumber.setValue(this.gameLogic.target);
   }
 
 });

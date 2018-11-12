@@ -5,6 +5,7 @@ const STATUS_WAITING = 0;
 const STATUS_SWAPPING = 1;
 const STATUS_DESTROYING = 2;
 const STATUS_FALLING = 3;
+const STATUS_GAMEENDED = 4;
 
 export var GameLogic = function(scene){
   this.scene = scene;
@@ -13,6 +14,8 @@ export var GameLogic = function(scene){
   this.fallingTime = null;
   this.score = 0;
   this.steps = 0;
+  this.target = 0;
+  this.onGameEnded = null;
   this.desroyCombo = 0;
   this.cup = new Array(Constants.GAME_FIELD_COLUMN_COUNT);
   for(var i=0; i < Constants.GAME_FIELD_COLUMN_COUNT; i++){
@@ -34,6 +37,19 @@ function getColumn(x){
 
 function getRow(y){
  return Math.floor((y-Constants.GAME_FIELD_BOTTOM)/Constants.GAME_FIELD_CELL_SIZE);
+}
+
+GameLogic.prototype.reset = function(){
+  for (var i = 0; i< this.cup.length; i++){
+    for(var j = 0; j< this.cup[i].length; j++){
+      if(this.cup[i][j]){
+        this.cup[i][j].removeFromParent();
+        this.cup[i][j] = null;
+      }
+    }
+  }
+  this.score = 0;
+  this.status = STATUS_WAITING;
 }
 
 GameLogic.prototype.addStone = function(stone, columnNumber){
@@ -129,6 +145,10 @@ GameLogic.prototype.startDestroy = function(){
     if(destroyLists.length == 0){
       this.desroyCombo = 0;
       this.status = STATUS_WAITING;
+      if(this.score >= this.target || this.steps == 0){
+        this.status = STATUS_GAMEENDED;
+        this.onGameEnded(this.score >= this.target);
+      }
       return;
     }
     this.steps += this.desroyCombo*1;
