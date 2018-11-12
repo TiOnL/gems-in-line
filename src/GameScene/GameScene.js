@@ -5,6 +5,7 @@ import {DestroyAnimation} from "./DestroyAnimation"
 import {AnimatedNumber} from "./AnimatedNumber"
 import {Resources} from "../Resources"
 import {LevelData} from "./LevelData"
+import {EndScene} from "../EndScene"
 
 var Layer = cc.Layer.extend({
   gameLogic:GameLogic,
@@ -44,6 +45,21 @@ var Layer = cc.Layer.extend({
           stageClear.removeFromParent();
           this.startLevel(this.currentLevel+1);
         },5000);
+      }else{
+        var stageFailMsg = new cc.Sprite(Resources.res.stageFail);
+        stageFailMsg.setPosition(size.width/2, size.height/2);
+        this.addChild(stageFailMsg);
+
+        var touchListener = cc.EventListener.create({
+          event: cc.EventListener.TOUCH_ONE_BY_ONE,
+          onTouchBegan: (touch, event) =>{
+              cc.eventManager.removeListener(touchListener);
+              stageFailMsg.removeFromParent();
+              this.gameLogic.reset();
+              this.startLevel(this.currentLevel);
+          }
+        });
+        cc.eventManager.addListener(touchListener, this);
       }
     };
     this.startLevel(1);
@@ -69,6 +85,10 @@ var Layer = cc.Layer.extend({
       this.gameLogic.addStone(stone, column);
       column = (column+1)%Constants.GAME_FIELD_COLUMN_COUNT
     }
+    for(var stoneType of LevelData[level].addStones){
+      var stone = new Stone(stoneType);
+      this.gameLogic.additionalStones.push(stone);
+    }
     this.gameLogic.steps = LevelData[level].steps;
     this.gameLogic.target = LevelData[level].target;
   },
@@ -79,7 +99,8 @@ var Layer = cc.Layer.extend({
   },
 
   endGame(){
-
+    cc.eventManager.removeAllListeners();
+    cc.director.runScene(new EndScene());
   },
 
   update(dt){

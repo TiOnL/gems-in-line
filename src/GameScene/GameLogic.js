@@ -15,6 +15,7 @@ export var GameLogic = function(scene){
   this.score = 0;
   this.steps = 0;
   this.target = 0;
+  this.additionalStones = [];
   this.onGameEnded = null;
   this.desroyCombo = 0;
   this.cup = new Array(Constants.GAME_FIELD_COLUMN_COUNT);
@@ -49,6 +50,7 @@ GameLogic.prototype.reset = function(){
     }
   }
   this.score = 0;
+  this.additionalStones = [];
   this.status = STATUS_WAITING;
 }
 
@@ -62,7 +64,17 @@ GameLogic.prototype.addStone = function(stone, columnNumber){
  stone.setPosition(getCellX(columnNumber), getCellY(rowMinFreePos));
  this.cup[columnNumber][rowMinFreePos] = stone;
  this.scene.addChild(stone);
+}
 
+GameLogic.prototype.addStoneToTop = function(stone, columnNumber){
+  console.log("stone added");
+  var rowMaxFilledPos = this.cup[columnNumber].length-1;
+  while (rowMaxFilledPos > -1 && this.cup[columnNumber][rowMaxFilledPos] ==null){
+    rowMaxFilledPos--;
+  }
+ stone.setPosition(getCellX(columnNumber), getCellY(rowMaxFilledPos+1));
+ this.cup[columnNumber][rowMaxFilledPos+1] = stone;
+ this.scene.addChild(stone);
 }
 
 GameLogic.prototype.update = function(dt){
@@ -151,18 +163,21 @@ GameLogic.prototype.startDestroy = function(){
       }
       return;
     }
-    this.steps += this.desroyCombo*1;
 
     for(var destroyList of destroyLists){
       for( var elem of destroyList){
         this.scene.addDestroyAnimation(getCellX(elem.column), getCellY(elem.row));
       }
-      this.steps += this.desroyCombo*Math.min(1, Math.floor(destroyList.length/4));
+      this.steps += (this.desroyCombo-1)+Math.max(0,destroyList.length-4); 
       this.score += Math.round(Math.sqrt(this.desroyCombo)*destroyList.length);
     }
     setTimeout( ()=>{
       for(var destroyList of destroyLists){
         for( var elem of destroyList){
+          var stoneToAdd = this.additionalStones.shift();
+          if(stoneToAdd){
+            this.addStoneToTop(stoneToAdd, elem.column);
+          }
           this.cup[elem.column][elem.row].removeFromParent();
           this.cup[elem.column][elem.row] = null;
         }
