@@ -3,7 +3,8 @@ export var Resources = {
   res:{
     gameBackground : "res/gameBackground.png",
     stageClear:"res/stageClear.png",
-    stageFail:"res/stageFail.png"
+    stageFail:"res/stageFail.png",
+    infoBackground:"res/infoBackground.png"
   },
   frames:{
     "stone0":{

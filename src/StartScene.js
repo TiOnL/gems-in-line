@@ -3,31 +3,33 @@ import {Resources} from "./Resources"
 
 
 var HelloWorldLayer = cc.Layer.extend({
-    sprite:null,
     ctor:function () {
 
         this._super();
 
         var size = cc.winSize;
 
-        var info = "Rules:\n\n Touch gem to select, and touch adjacent one to swap it.\n"+
-        "Place 4 gems to each other, to make them dissapear.\n"+
-        "\n You will receive extra steps, if 5 or more \ngems are dissapearing or "+
-        "in case of chain reaction. \n You will win if you reach a target score.";
-        var helloLabel = new cc.LabelTTF("Touch to start", "Arial", 38);
-        helloLabel.setPosition(size.width/2, size.height*0.7);
+        var info = "  Touch gem to select, and \ntouch adjacent one to swap it. \n"+
+        "  Place 4 gems to each other, \nto make them dissapear.\n"+
+        "\n  You will receive extra steps, if 5 \nor more gems are dissapearing \nor "+
+        "in case of chain reaction. \n  You will win if you reach a \ntarget score.";
+        var helloLabel = new cc.LabelTTF("Touch to start", "Arial", 58);
+        helloLabel.setPosition(size.width/2, size.height*0.75);
         this.addChild(helloLabel, 5);
-        var infoLabel = new cc.LabelTTF(info, "Arial", 28);
-        infoLabel.setPosition(size.width/2, size.height/2);
+        var rulesLabel = new cc.LabelTTF("Rules", "Arial", 58);
+        rulesLabel.setPosition(size.width/2, size.height*0.5);
+        this.addChild(rulesLabel, 5);
+
+        var infoLabel = new cc.LabelTTF(info, "Arial", 38);
+        infoLabel.setPosition(size.width/2, size.height*0.3);
         this.addChild(infoLabel, 5);
 
-        // add "HelloWorld" splash screen"
-        this.sprite = new cc.Sprite(Resources.res.HelloWorld_png);
-        this.sprite.attr({
+        var bgSprite = new cc.Sprite(Resources.res.infoBackground);
+        bgSprite.attr({
             x: size.width / 2,
             y: size.height / 2
         });
-        this.addChild(this.sprite, 0);
+        this.addChild(bgSprite, -1);
         cc.eventManager.addListener({
                    event: cc.EventListener.KEYBOARD,
                    onKeyPressed: (keyCode, event) =>{
