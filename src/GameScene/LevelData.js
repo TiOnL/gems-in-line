@@ -9,6 +9,21 @@ export const LevelData = [
     addStones:[]
   },
   {
+    target:1,
+    steps:1,
+    startStones:[0,2,1,1,4,3,3,4,1,0,1,2],
+    addStones:[]
+  },
+  {
+    target:1,
+    steps:1,
+    startStones:[3,3,3,2,0,0,1,4,1,2,4,1,3,0,3,2,0,2],
+    addStones:[]
+  },
+
+
+
+  {
     target:5,
     steps:4,
     startStones:[1,2,1,1,4,2,0,4,2,0,3,4,2,3,4,1,0,3],
