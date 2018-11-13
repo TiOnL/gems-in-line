@@ -914,11 +914,7 @@ var Resources = {
   },
 
   getAllImages:function(){
-    var result = [];
-    for (var i in this.res) {
-      result.push(this.res[i]);
-    }
-    return result;
+    return findStrings([this]);
   },
 
   getSpriteFrames: function(objectType){
@@ -936,6 +932,24 @@ var Resources = {
     }
     return spriteFrames;
   }
+}
+
+function findStrings(object){
+  var strings = [];
+  if(typeof object == "string"){
+    strings.push(object);
+    return strings;
+  }
+  if(Array.isArray(object)){
+    for(var elem of object){
+      strings = strings.concat(findStrings(elem));
+    }
+  } else if(typeof object == "object"){
+    for(var key in object){
+      strings = strings.concat(findStrings(object[key]));
+    }
+  }
+  return strings;
 }
 
 
