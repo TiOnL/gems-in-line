@@ -14,6 +14,7 @@ var Layer = cc.Layer.extend({
   stepsNumber:null,
   targetNumber:null,
   currentLevel:0,
+  levelLabel:null,
   ctor:function () {
     this._super();
     var size = cc.winSize;
@@ -22,20 +23,25 @@ var Layer = cc.Layer.extend({
     gameBackground.setPosition(size.width/2, size.height/2);
     this.addChild(gameBackground, -127);
 
-    this.scoreNumber = new AnimatedNumber(4);
-    this.scoreNumber.x = size.width * 0.6;
-    this.scoreNumber.y = size.height * 0.91;
+    this.scoreNumber = new AnimatedNumber(3);
+    this.scoreNumber.x = size.width * 0.53;
+    this.scoreNumber.y = size.height * 0.90;
     this.scoreNumber.scaleX = 0.8;
     this.addChild(this.scoreNumber);
     this.stepsNumber = new AnimatedNumber(3);
     this.stepsNumber.x = 50;
-    this.stepsNumber.y = size.height * 0.93;
+    this.stepsNumber.y = size.height * 0.90;
     this.addChild(this.stepsNumber);
-    this.targetNumber = new AnimatedNumber(4);
-    this.targetNumber.x = size.width * 0.6;
-    this.targetNumber.y = size.height * 0.97;
+    this.targetNumber = new AnimatedNumber(3);
+    this.targetNumber.x = size.width * 0.53;
+    this.targetNumber.y = size.height * 0.96;
     this.targetNumber.scaleX = 0.8;
     this.addChild(this.targetNumber);
+    this.levelLabel = new cc.LabelTTF("1", "Serif Bold", 80);
+    this.levelLabel.x = size.width * 0.85;
+    this.levelLabel.y = size.height *0.90 ;
+    this.addChild(this.levelLabel, 5);
+
     this.gameLogic.onGameEnded = (won)=>{
       if(won){
         var stageClear = new cc.Sprite(Resources.res.stageClear);
@@ -74,6 +80,7 @@ var Layer = cc.Layer.extend({
       this.endGame();
       return;
     }
+    this.levelLabel.setString(String(level));
     var column = 0;
     for(var stoneType of LevelData[level].startStones){
       var stone = new Stone(stoneType);
