@@ -778,6 +778,7 @@ var Resources = {
     gameBackground : "res/gameBackground.png",
     stageClear:"res/stageClear.png",
     stageFail:"res/stageFail.png",
+    startScreen:"res/startScreen.png",
     infoBackground:"res/infoBackground.png"
   },
   frames:{
@@ -988,27 +989,9 @@ __webpack_require__.r(__webpack_exports__);
 
 var HelloWorldLayer = cc.Layer.extend({
     ctor:function () {
-
         this._super();
-
         var size = cc.winSize;
-
-        var info = "  Touch gem to select, and \ntouch adjacent one to swap it. \n"+
-        "  Place 4 gems to each other, \nto make them dissapear.\n"+
-        "\n  You will receive extra steps, if 5 \nor more gems are dissapearing \nor "+
-        "in case of chain reaction. \n  You will win if you reach a \ntarget score.";
-        var helloLabel = new cc.LabelTTF("Touch to start", "Arial", 58);
-        helloLabel.setPosition(size.width/2, size.height*0.75);
-        this.addChild(helloLabel, 5);
-        var rulesLabel = new cc.LabelTTF("Rules", "Arial", 58);
-        rulesLabel.setPosition(size.width/2, size.height*0.5);
-        this.addChild(rulesLabel, 5);
-
-        var infoLabel = new cc.LabelTTF(info, "Arial", 38);
-        infoLabel.setPosition(size.width/2, size.height*0.3);
-        this.addChild(infoLabel, 5);
-
-        var bgSprite = new cc.Sprite(_Resources__WEBPACK_IMPORTED_MODULE_1__["Resources"].res.infoBackground);
+        var bgSprite = new cc.Sprite(_Resources__WEBPACK_IMPORTED_MODULE_1__["Resources"].res.startScreen);
         bgSprite.attr({
             x: size.width / 2,
             y: size.height / 2
