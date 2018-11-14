@@ -5,7 +5,7 @@ export var Resources = {
     stageClear:"res/stageClear.png",
     stageFail:"res/stageFail.png",
     startScreen:"res/startScreen.png",
-    infoBackground:"res/infoBackground.png"
+    endScreen:"res/endScreen.png"
   },
   frames:{
     "stone0":{
